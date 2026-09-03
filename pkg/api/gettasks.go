@@ -14,13 +14,13 @@ func getTasksHandler(w http.ResponseWriter, r *http.Request) {
 
 	tasks, err := db.GetTasks(50, search)
 	if err != nil {
-		writeJsonError(w, err)
+		writeInternalError(w, err)
 		return
 	}
 	if tasks == nil {
 		tasks = []*db.Task{}
 	}
 
-	writeJson(w, TaskResp{Tasks: tasks})
+	writeJson(w, http.StatusOK, TaskResp{Tasks: tasks})
 
 }

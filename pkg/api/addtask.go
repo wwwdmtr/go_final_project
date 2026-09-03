@@ -13,27 +13,27 @@ import (
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
-		writeJsonError(w, err)
+		writeJsonError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	if task.Title == "" {
-		writeJsonError(w, errors.New("не указан заголовок задачи"))
+		writeJsonError(w, http.StatusBadRequest, errors.New("не указан заголовок задачи"))
 		return
 	}
 
 	if err := checkDate(&task); err != nil {
-		writeJsonError(w, err)
+		writeJsonError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	id, err := db.AddTask(&task)
 	if err != nil {
-		writeJsonError(w, err)
+		writeInternalError(w, err)
 		return
 	}
 
-	writeJson(w, map[string]any{"id": id})
+	writeJson(w, http.StatusOK, map[string]any{"id": id})
 }
 
 func checkDate(task *db.Task) error {

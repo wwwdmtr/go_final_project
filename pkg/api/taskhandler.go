@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -15,5 +16,7 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 		updateTaskHandler(w, r)
 	case http.MethodDelete:
 		deleteTaskHandler(w, r)
+	default:
+		writeJsonError(w, http.StatusMethodNotAllowed, errors.New("метод не поддерживается"))
 	}
 }
