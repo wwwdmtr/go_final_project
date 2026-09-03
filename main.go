@@ -32,6 +32,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	api.Init()
 	fmt.Printf("Server is running on port %s\n", port)

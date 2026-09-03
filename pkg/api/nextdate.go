@@ -12,13 +12,13 @@ const DateFormat = scheduler.DateFormat
 func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	now, err := parseNow(r.FormValue("now"))
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	next, err := scheduler.NextDate(now, r.FormValue("date"), r.FormValue("repeat"))
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 

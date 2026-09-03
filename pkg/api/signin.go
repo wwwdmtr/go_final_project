@@ -27,13 +27,13 @@ func hashPassword(password string) string {
 func signinHandler(w http.ResponseWriter, r *http.Request) {
 	var req signinRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		writeJsonError(w, err)
+		writeJsonError(w, http.StatusBadRequest, err)
 		return
 	}
 
 	pass := os.Getenv("TODO_PASSWORD")
 	if req.Password != pass {
-		writeJsonError(w, errors.New("неверный пароль"))
+		writeJsonError(w, http.StatusUnauthorized, errors.New("неверный пароль"))
 		return
 	}
 
@@ -43,9 +43,9 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString(jwtSecret())
 	if err != nil {
-		writeJsonError(w, err)
+		writeInternalError(w, err)
 		return
 	}
 
-	writeJson(w, map[string]any{"token": tokenString})
+	writeJson(w, http.StatusOK, map[string]any{"token": tokenString})
 }

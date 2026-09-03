@@ -9,9 +9,9 @@ func getTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	task, err := db.GetTask(id)
 	if err != nil {
-		writeJsonError(w, err)
+		writeInternalError(w, err)
 		return
 	}
 
-	writeJson(w, task)
+	writeJson(w, http.StatusOK, task)
 }
